@@ -7,17 +7,13 @@ using System.Text;
 
 namespace AnnoyingManager.Core.Entities
 {
-    public class DiaryTasksList : List<Task>
+    public class DiaryTasksList : List<Task>, IDiaryTasksList
     {
         private IReadOnlyConfigRepository _configRepository;
 
         private DiaryTasksList()
         {
         }
-
-        public delegate void TaskEnded(Task task);
-
-        public event TaskEnded OnTaskEnded;
 
         public static DiaryTasksList Create(List<Task> list, IReadOnlyConfigRepository configRepository)
         {
@@ -32,18 +28,24 @@ namespace AnnoyingManager.Core.Entities
             get
             {
                 var lastTask = GetLast();
+                if (lastTask == null)
+                {
+                    return true;
+                }
                 var config = _configRepository.GetConfig();
                 var expectedEndTime = CalculateExpectedEndTime(lastTask, config);
                 var now = _configRepository.GetCurrentDateTime().TimeOfDay;
-                if (lastTask == null || expectedEndTime < now)
+                if (expectedEndTime < now)
+                {
                     return true;
+                }
                 return false;
             }
         }
 
         private TimeSpan CalculateExpectedEndTime(Task lastTask, Repository.Config config)
         {
-            int taskLength = Math.Max(config.MaxLenghtOfTaskInSeconds, lastTask.ExpectedDurationInSeconds);
+            int taskLength = Math.Max(config.MaxLengthOfTaskInSeconds, lastTask.ExpectedDurationInSeconds);
             var expectedEndTime = lastTask.StartDate.TimeOfDay.Add(TimeSpan.FromSeconds(taskLength));
             return expectedEndTime;
         }
@@ -59,7 +61,7 @@ namespace AnnoyingManager.Core.Entities
             var config = _configRepository.GetConfig();
             var currentDate = _configRepository.GetCurrentDateTime();
             if (Count == 0)
-                AddFirstTask(task, config, currentDate);
+                AddFirstTaskOfTheDay(task, config, currentDate);
             else
             {
                 var lastTask = GetLast();
@@ -69,18 +71,18 @@ namespace AnnoyingManager.Core.Entities
                     var expectedEnd = lastTask.StartDate.Date.Add(expectedEndTime);
                     task.StartDate = task.AssignedDate < expectedEnd ? task.AssignedDate : expectedEnd;
                     lastTask.EndDate = task.StartDate;
+                    lastTask.Pending = true;
                 }
                 else
                 {
                     // the end time of the last task is known when it has been ended by save all (closing app)
                     task.StartDate = lastTask.EndDate;
                 }
-                EndTask(lastTask);
             }
             base.Add(task);
         }
 
-        private void AddFirstTask(Task task, Config config, DateTime currentDate)
+        private void AddFirstTaskOfTheDay(Task task, Config config, DateTime currentDate)
         {
             task.StartDate = currentDate.Date;
             task.StartDate = task.StartDate.Add(config.StartupTime);
@@ -94,15 +96,19 @@ namespace AnnoyingManager.Core.Entities
                 if (lastTask.EndDate == DateTime.MinValue)
                 {
                     lastTask.EndDate = _configRepository.GetCurrentDateTime();
-                    EndTask(lastTask);
+                    lastTask.Pending = true;
                 }
             }
         }
 
-        private void EndTask(Task task)
+        public IEnumerable<Task> GetPendingTasks()
         {
-            if (OnTaskEnded != null)
-                OnTaskEnded(task);
+            return this.Where(t => t.Pending);
+        }
+
+        public void SetAllSaved()
+        {
+            ForEach(t => t.Pending = false);
         }
     }
 }

@@ -109,5 +109,9 @@ namespace AnnoyingManager.Core.Repository
             return _directoryPath;
         }
 
+        public void SaveTasks(IEnumerable<Task> taskToBeSaved)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

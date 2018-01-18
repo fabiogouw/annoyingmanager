@@ -15,21 +15,28 @@ namespace AnnoyingManager.Core
     /// </summary>
     public class TheManager
     {
-        private ITaskRepository _taskRepository { get; set; }
-        private ITaskSupplier _taskSupplier { get; set; }
-        private IConfigRepository _configRepository { get; set; }
+        private ITaskRepository _taskRepository;
+        private ITaskSupplier _taskSupplier;
+        private IConfigRepository _configRepository;
+        private IManagerStateFactory _managerStateFactory;
 
         private IManagerState _state = new ManagerStateWithoutTask();
         private DateTime _currentDate = DateTime.MinValue;
         private DiaryTasksList _tasksOfTheDay = null;
         private Timer _timer = null;
         private volatile bool _processing = false;
+        private volatile bool _savingToRepository = false;
+        private StateContext _context = new StateContext();
 
-        public TheManager(ITaskRepository taskRepository, ITaskSupplier taskSupplier, IConfigRepository configRepository)
+        public TheManager(ITaskRepository taskRepository, 
+            ITaskSupplier taskSupplier, 
+            IConfigRepository configRepository,
+            IManagerStateFactory managerStateFactory)
         {
             _taskRepository = taskRepository;
             _taskSupplier = taskSupplier;
             _configRepository = configRepository;
+            _managerStateFactory = managerStateFactory;
         }
 
         public void Initialize()
@@ -44,7 +51,10 @@ namespace AnnoyingManager.Core
         public void Application_ApplicationExit(object sender, EventArgs e)
         {
             if (_tasksOfTheDay != null)
+            {
                 _tasksOfTheDay.SaveAll();
+                SaveTasks(_tasksOfTheDay);
+            }
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -54,9 +64,10 @@ namespace AnnoyingManager.Core
                 _processing = true;
                 try
                 {
-                    var context = CreateContext();
-                    _state.Handle(context);
-                    ProcessContext(context);
+                    _context = EnrichContext(_context);
+                    _context = _state.Handle(_context);
+                    ProcessContext(_context);
+                    SaveTasks(_context.TasksOfTheDay);
                 }
                 finally
                 {
@@ -65,28 +76,54 @@ namespace AnnoyingManager.Core
             }
         }
 
-        private StateContext CreateContext()
+        private StateContext EnrichContext(StateContext context)
         {
             var config = _configRepository.GetConfig();
-            return new StateContext()
-            {
-                Config = config,
-                CurrentDateTime = _configRepository.GetCurrentDateTime(),
-                TaskRepository = _taskRepository,
-                TaskSupplier = _taskSupplier,
-                TasksOfTheDay = _tasksOfTheDay,
-                LastTask = _tasksOfTheDay.GetLast()
-            };
+            context.Config = config;
+            context.CurrentDateTime = _configRepository.GetCurrentDateTime();
+            context.TaskSupplier = _taskSupplier;
+            context.TasksOfTheDay = _tasksOfTheDay;
+            context.LastTask = _tasksOfTheDay.GetLast();
+            return context;
         }
 
         private void ProcessContext(StateContext context)
         {
-            if(context.MustInitializeListOfTasks)
+            if (_tasksOfTheDay == null || _tasksOfTheDay.Count == 0)
+            {
                 InitializeListOfTasks();
+            }
             if (context.NewTask != null)
+            {
                 _tasksOfTheDay.Add(context.NewTask);
-            if (context.NewState != null)
-                _state = context.NewState;   // the most important piece of code of this method
+                context.NewTask = null; // clear the task so it won't be collected again
+            }
+            if (context.NewState.HasValue)
+            {
+                _state = _managerStateFactory.GetState(context.NewState.Value);   // the most important piece of code of this method
+            }
+        }
+
+        private void SaveTasks(IDiaryTasksList taskList)
+        {
+            // avois saving errors while looping
+            if (!_savingToRepository)
+            {
+                _savingToRepository = true;
+                try
+                {
+                    var tasksToBeSaved = taskList.GetPendingTasks();
+                    if (tasksToBeSaved.Count() > 0)
+                    {
+                        _taskRepository.SaveTasks(tasksToBeSaved);
+                        taskList.SetAllSaved();
+                    }
+                }
+                finally
+                {
+                    _savingToRepository = false;
+                }
+            }
         }
 
         private void InitializeListOfTasks()
@@ -94,12 +131,6 @@ namespace AnnoyingManager.Core
             var currentDate = _configRepository.GetCurrentDateTime();
             var savedTasksForThisDay = _taskRepository.GetCurrentTasks(currentDate);
             _tasksOfTheDay = DiaryTasksList.Create(savedTasksForThisDay, _configRepository);
-            _tasksOfTheDay.OnTaskEnded += _tasksOfTheDay_OnTaskEnded;
-        }
-
-        private void _tasksOfTheDay_OnTaskEnded(Task task)
-        {
-            _taskRepository.AddTask(task);
         }
     }
 }

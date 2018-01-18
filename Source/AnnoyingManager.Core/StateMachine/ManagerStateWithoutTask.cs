@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnnoyingManager.Core.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,13 +12,19 @@ namespace AnnoyingManager.Core.StateMachine
     /// </summary>
     public class ManagerStateWithoutTask : IManagerState 
     {
-        public void Handle(StateContext context)
+        public StateType StateType
+        {
+            get { return StateType.WithoutTask; }
+        }
+
+        public StateContext Handle(StateContext context)
         {
             var currentTime = context.CurrentDateTime;
             if (currentTime.TimeOfDay < context.Config.StartupTime || currentTime.TimeOfDay > context.Config.EndTime)
-                context.NewState = new ManagerStateRestingTime();
+                context.NewState = StateType.RestingTime;
             else
-                context.NewState = new ManagerStateAskingTask();
+                context.NewState = StateType.AskingTask;
+            return context;
         }
     }
 }

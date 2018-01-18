@@ -6,14 +6,16 @@ using System.Windows.Forms;
 using AnnoyingManager.Core;
 using AnnoyingManager.WindowsTrayAlert;
 using AnnoyingManager.Core.Repository;
+using Ninject;
 
 namespace AnnoyingManager.Host
 {
     internal class HostAppContext : ApplicationContext
     {
+        private IKernel _container = new StandardKernel(new IocNinjectModule());
         public HostAppContext()
         {
-            TheManager manager = new TheManager(new TxtRepository(), new FormAlert(), new XmlConfigRepository());
+            var manager = _container.Get<TheManager>();
             Application.ApplicationExit += manager.Application_ApplicationExit;
             manager.Initialize();
         }

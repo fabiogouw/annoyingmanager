@@ -11,7 +11,7 @@ namespace AnnoyingManager.Core.Entities
         public Suggestion()
         {
             SuggedtedTasks = new List<Task>();
-            Categories = new List<string>();
+            Groups = new List<string>();
             LenghtOfTaskInSeconds = 5 * 60;
         }
 
@@ -20,9 +20,9 @@ namespace AnnoyingManager.Core.Entities
         /// </summary>
         public List<Task> SuggedtedTasks { get; set; }
         /// <summary>
-        /// Categories used in the last tasks.
+        /// Groups used in the last tasks.
         /// </summary>
-        public List<string> Categories { get; set; }
+        public List<string> Groups { get; set; }
         public string Message { get; set; }
         public int LenghtOfTaskInSeconds { get; set; }
     }

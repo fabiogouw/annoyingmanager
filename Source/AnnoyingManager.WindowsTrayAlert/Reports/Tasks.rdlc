@@ -6,16 +6,19 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.28125in</Width>
+              <Width>0.76458in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.375in</Width>
+              <Width>1in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>2.18333in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1.04167in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.53541in</Width>
+              <Width>1.40208in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -34,9 +37,10 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Category</Value>
+                              <Value>Cat.</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Color>White</Color>
                               </Style>
@@ -48,6 +52,47 @@
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>Textbox2</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>#4e648a</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <BottomBorder>
+                          <Color>Black</Color>
+                        </BottomBorder>
+                        <BackgroundColor>#384c70</BackgroundColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Textbox6">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Group</Value>
+                              <Style>
+                                <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
+                                <FontWeight>Bold</FontWeight>
+                                <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox6</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#4e648a</Color>
@@ -80,6 +125,7 @@
                               <Value>Description</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Color>White</Color>
                               </Style>
@@ -123,6 +169,7 @@
                               <Value>Ref. ID</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Color>White</Color>
                               </Style>
@@ -163,6 +210,7 @@
                               <Value>Time</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Color>White</Color>
                               </Style>
@@ -205,6 +253,7 @@
                               <Value>=Fields!Category.Value</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <Color>#4d4d4d</Color>
                               </Style>
                             </TextRun>
@@ -224,7 +273,40 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="Group">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!Group.Value</Value>
+                              <Style>
+                                <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
+                                <Color>#4d4d4d</Color>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Group</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Color>#e5e5e5</Color>
+                          <Style>Solid</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -239,6 +321,7 @@
                               <Value>=Fields!Description.Value</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <Color>#4d4d4d</Color>
                               </Style>
                             </TextRun>
@@ -272,6 +355,7 @@
                               <Value>=Fields!ReferenceID.Value</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <Color>#4d4d4d</Color>
                               </Style>
                             </TextRun>
@@ -307,6 +391,7 @@
                               <Value>=Fields!TimeDescription.Value</Value>
                               <Style>
                                 <FontFamily>Tahoma</FontFamily>
+                                <FontSize>9pt</FontSize>
                                 <Format>M/d/yyyy h:mm tt</Format>
                                 <Color>#4d4d4d</Color>
                               </Style>
@@ -341,6 +426,7 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
@@ -363,6 +449,7 @@
                             <Value>Date</Value>
                             <Style>
                               <FontFamily>Tahoma</FontFamily>
+                              <FontSize>9pt</FontSize>
                               <FontWeight>Bold</FontWeight>
                               <Color>White</Color>
                             </Style>
@@ -420,6 +507,7 @@
                             <Value>=Format(Fields!TaskDate.Value, "dd/MM/yyyy")</Value>
                             <Style>
                               <FontFamily>Tahoma</FontFamily>
+                              <FontSize>9pt</FontSize>
                               <Color>#4d4d4d</Color>
                             </Style>
                           </TextRun>
@@ -455,7 +543,7 @@
         <Top>0.06944in</Top>
         <Left>0.125in</Left>
         <Height>0.5in</Height>
-        <Width>7.23333in</Width>
+        <Width>7.39166in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -466,7 +554,7 @@
     <Height>0.64236in</Height>
     <Style />
   </Body>
-  <Width>7.51459in</Width>
+  <Width>7.63333in</Width>
   <Page>
     <PageHeader>
       <Height>0.92708in</Height>
@@ -518,6 +606,7 @@
                   <Value>="User: " + User!UserID</Value>
                   <Style>
                     <FontFamily>Tahoma</FontFamily>
+                    <FontSize>9pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
@@ -625,9 +714,25 @@
           <DataField>Description</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="EndDate">
+          <DataField>EndDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Group">
+          <DataField>Group</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="HasBeenGrouped">
+          <DataField>HasBeenGrouped</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
         <Field Name="ReferenceID">
           <DataField>ReferenceID</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StartDate">
+          <DataField>StartDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
         <Field Name="TaskDate">
           <DataField>TaskDate</DataField>

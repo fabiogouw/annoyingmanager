@@ -15,19 +15,24 @@ namespace AnnoyingManager.Core.StateMachine
     {
         private bool _hasBeenWarned = false;
 
-        public void Handle(StateContext context)
+        public StateType StateType
+        {
+            get { return StateType.RestingTime; }
+        }
+
+        public StateContext Handle(StateContext context)
         {
             var currentTime = context.CurrentDateTime;
             if (currentTime.TimeOfDay >= context.Config.StartupTime && currentTime.TimeOfDay <= context.Config.EndTime)
             {
-                context.MustInitializeListOfTasks = true;
-                context.NewState = new ManagerStateWithoutTask();
+                context.NewState = StateType.WithoutTask;
             }
             if (!_hasBeenWarned)
             {
                 context.TaskSupplier.UpdateStatus(new Alert() { AlertType = AlertType.Resting });
                 _hasBeenWarned = true;
             }
+            return context;
         }
     }
 }

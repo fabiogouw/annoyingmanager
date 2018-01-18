@@ -5,6 +5,7 @@ using System.Text;
 using AnnoyingManager.Core.Repository;
 using AnnoyingManager.Core.Entities;
 using AnnoyingManager.Core.Contracts;
+using AnnoyingManager.Core.Common;
 
 namespace AnnoyingManager.Core.StateMachine
 {
@@ -15,15 +16,15 @@ namespace AnnoyingManager.Core.StateMachine
     public class StateContext
     {
         // input ones
-        public ITaskRepository TaskRepository { get; set; }
         public ITaskSupplier TaskSupplier { get; set; }
-        public DiaryTasksList TasksOfTheDay { get; set; }
+        public IDiaryTasksList TasksOfTheDay { get; set; }
         public Config Config { get; set; }
         public DateTime CurrentDateTime { get; set; }
         public Task LastTask { get; set; }
         // output ones
-        public IManagerState NewState { get; set; }
-        public bool MustInitializeListOfTasks { get; set; }
+        public StateType? NewState { get; set; }
         public Task NewTask { get; set; }
+
+        public bool Rested { get; set; }
     }
 }

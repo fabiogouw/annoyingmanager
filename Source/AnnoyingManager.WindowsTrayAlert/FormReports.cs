@@ -11,20 +11,50 @@ using AnnoyingManager.Core.Repository;
 using AnnoyingManager.Core;
 using AnnoyingManager.Core.Entities;
 using AnnoyingManager.Core.DTO;
+using AnnoyingManager.WindowsTrayAlert.Reports;
+using Ninject;
+using System.Reflection;
+using AnnoyingManager.Core.Common;
 
 namespace AnnoyingManager.WindowsTrayAlert
 {
     public partial class FormReports : Form
     {
-        public FormReports()
+        private ITaskRepository _repository;
+        private ReportControl _currentReport;
+
+        public FormReports(ITaskRepository repository, ReportControl[] reportControls)
         {
+            _repository = repository;
             InitializeComponent();
+            cboReports.DisplayMember = "DisplayName";
+            cboReports.DataSource = reportControls;
+        }
+
+        public void Execute()
+        {
+            if (CheckIfSystemHasReportingServicesInstalled())
+                ShowDialog();
+            else
+                MessageBox.Show(Properties.Resources.ReportingServices10NotInstalled, Constants.APP_LABEL, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private bool CheckIfSystemHasReportingServicesInstalled()
+        {
+            try
+            {
+                Assembly.Load("Microsoft.ReportViewer.WinForms, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void FormReports_Load(object sender, EventArgs e)
         {
             this.SetDefaults();
-            GenerateReport();
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -34,65 +64,22 @@ namespace AnnoyingManager.WindowsTrayAlert
 
         private void GenerateReport()
         {
-            this.reportViewer1.LocalReport.DataSources.Clear();
-            ITaskRepository repository = new TxtRepository();
-            var tasks = repository.SearchTasks(dtpFrom.Value, dtpTo.Value);
-            var tasksForReport = TaskForReport.ConvertFromEntity(tasks);
-            tasksForReport = ApplyFilter(tasksForReport);
-            this.reportViewer1.LocalReport.DataSources.Add(new ReportDataSource("TaskDataSet", tasksForReport));
-            this.reportViewer1.RefreshReport();
-        }
-
-        private List<TaskForReport> ApplyFilter(List<TaskForReport> tasksForReport)
-        {
-            tasksForReport = FilterBlankCategory(tasksForReport);
-            tasksForReport = GroupTasks(tasksForReport);
-            tasksForReport = SetTimeDescription(tasksForReport);
-            return tasksForReport;
-        }
-
-        private List<TaskForReport> FilterBlankCategory(List<TaskForReport> tasks)
-        {
-            if (chkIgnoreBlank.Checked)
+            if (_currentReport != null)
             {
-                tasks = tasks.Where(t => !string.IsNullOrEmpty(t.Category)).ToList();
+                reportViewer1.LocalReport.DataSources.Clear();
+                reportViewer1 = _currentReport.ApplyReport(reportViewer1);
+                reportViewer1.RefreshReport();
             }
-            return tasks;
         }
 
-        private List<TaskForReport> GroupTasks(List<TaskForReport> tasksForReport)
+        private void cboReports_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (chkGroupSimilar.Checked)
+            _currentReport = (ReportControl)cboReports.SelectedItem;
+            if (_currentReport != null)
             {
-                tasksForReport = (from r in tasksForReport
-                                  group r by new { r.TaskDate, r.Category, r.ReferenceID, r.Description } into g
-                                  orderby g.Key.TaskDate ascending
-                                  select new TaskForReport()
-                                  {
-                                      TaskDate = g.Key.TaskDate,
-                                      Category = g.Key.Category,
-                                      ReferenceID = g.Key.ReferenceID,
-                                      Description = g.Key.Description,
-                                      TimeElapsed = TimeSpan.FromMinutes(g.Sum(t => t.TimeElapsed.TotalMinutes)),
-                                      HasBeenGrouped = true
-                                  }).ToList();
+                grpParameters.Controls.Add(_currentReport);
+                _currentReport.Location = new Point(5, 10);
             }
-            return tasksForReport;
-        }
-
-        private List<TaskForReport> SetTimeDescription(List<TaskForReport> tasksForReport)
-        {
-            foreach (var task in tasksForReport)
-            {
-                if (task.HasBeenGrouped)
-                    task.TimeDescription = task.TimeElapsed.ToString(@"hh\:mm");
-                else
-                {
-                    var timeElapsed = task.EndDate.Subtract(task.StartDate);
-                    task.TimeDescription = string.Format("{0:hh\\:mm} ({1:hh\\:mm} - {2:hh\\:mm})", timeElapsed, task.StartDate, task.EndDate);
-                }
-            }
-            return tasksForReport;
         }
     }
 }

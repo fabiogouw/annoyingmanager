@@ -23,7 +23,7 @@ namespace AnnoyingManager.Tests.Core.Entities
             _config = new Config()
             {
                 StartupTime = TimeSpan.Parse("08:00:00"),
-                MaxLenghtOfTaskInSeconds = 600  // 10 minutes
+                MaxLengthOfTaskInSeconds = 600  // 10 minutes
             };
             _mockConfig = new Mock<IReadOnlyConfigRepository>();
             _mockConfig.Setup(m => m.GetConfig()).Returns(_config);

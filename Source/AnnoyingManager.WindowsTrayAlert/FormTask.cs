@@ -9,13 +9,27 @@ using System.Windows.Forms;
 using AnnoyingManager.Core;
 using AnnoyingManager.Core.Entities;
 using AnnoyingManager.Core.Common;
+using AnnoyingManager.Core.Repository;
+using AnnoyingManager.Core.Contracts;
 
 namespace AnnoyingManager.WindowsTrayAlert
 {
     public partial class FormTask : Form
     {
-        public FormTask()
+        private IConfigRepository _configRepository;
+        private FormConfig _formConfig;
+        private FormReports _formReports;
+        private FormAbout _formAbout;
+
+        public FormTask(IConfigRepository configRepository,
+            FormConfig formConfig,
+            FormReports formReports,
+            FormAbout formAbout)
         {
+            _configRepository = configRepository;
+            _formConfig = formConfig;
+            _formReports = formReports;
+            _formAbout = formAbout;
             InitializeComponent();
             this.SetDefaults();
         }
@@ -32,6 +46,16 @@ namespace AnnoyingManager.WindowsTrayAlert
 
         public delegate Task ExecuteFormTask(Suggestion suggestion);
 
+        public event EventHandler Exited;
+
+        protected virtual void OnExited(EventArgs e)
+        {
+            if (Exited != null)
+            {
+                Exited(this, e);
+            }
+        }
+
         /// <summary>
         /// Shows the form so the user can provide the task she's doing right now.
         /// </summary>
@@ -41,7 +65,7 @@ namespace AnnoyingManager.WindowsTrayAlert
         {
             _resultTask = null;
             InitializeSuggestion(suggestion);
-            this.TopMost = true;
+            TopMost = true;
             ShowDialog();
             return _resultTask;
         }
@@ -51,7 +75,8 @@ namespace AnnoyingManager.WindowsTrayAlert
             SetStatusText(suggestion);
             SetDurationValue(suggestion);
             ChangeDurationLabel(trkDuration.Value);
-            InitializeCategoriesControl(suggestion);
+            InitializeCategoriesControl();
+            InitializeGroupControl(suggestion);
             InitializeSuggestionPanel(suggestion);
         }
 
@@ -66,15 +91,30 @@ namespace AnnoyingManager.WindowsTrayAlert
             lblStatus.Text = suggestion.Message;
         }
 
-        private void InitializeCategoriesControl(Suggestion suggestion)
+        private void InitializeCategoriesControl()
         {
-            ddlCategories.DataSource = suggestion.Categories;
+            var categories = _configRepository.GetConfig().Categories;
+            ddlCategories = SetValuesForComboBox(ddlCategories, categories, _lastTaskUsed != null ? _lastTaskUsed.Category : string.Empty);
+        }
+
+        private void InitializeGroupControl(Suggestion suggestion)
+        {
+            ddlGroups = SetValuesForComboBox(ddlGroups, suggestion.Groups, _lastTaskUsed != null ? _lastTaskUsed.Group : string.Empty);
+        }
+
+        private ComboBox SetValuesForComboBox(ComboBox comboBox, List<string> values, string lastUsedValue)
+        {
+            values = values.Where(v => !string.IsNullOrEmpty(v)).ToList();
+            comboBox.DataSource = values;
             if (_lastTaskUsed != null)
             {
-                int index = suggestion.Categories.IndexOf(_lastTaskUsed.Category);
-                if (index >= 0)
-                    ddlCategories.SelectedIndex = index;
+                comboBox.SelectedIndex = values.IndexOf(lastUsedValue);
             }
+            else
+            {
+                comboBox.SelectedIndex = -1;
+            }
+            return comboBox;
         }
 
         private void InitializeSuggestionPanel(Suggestion suggestion)
@@ -86,7 +126,7 @@ namespace AnnoyingManager.WindowsTrayAlert
                 var button = new Button()
                 {
                     Tag = task, // very important, holds the information of the suggested task
-                    Text = string.Format("{0} - ({1}){2}", task.Category, task.ReferenceID, task.Description),
+                    Text = string.Format("{0} {1} - ({2}){3}", task.Category, task.Group, task.ReferenceID, task.Description),
                     AutoSizeMode = AutoSizeMode.GrowAndShrink,
                     AutoSize = true,
                     TextAlign = ContentAlignment.MiddleLeft,
@@ -104,11 +144,12 @@ namespace AnnoyingManager.WindowsTrayAlert
             var newTask = new Task() 
             {
                 Category = ddlCategories.Text, 
+                Group = ddlGroups.Text,
                 ReferenceID = txtReference.Text, 
                 Description = txtDescription.Text 
             };
             SetCurrentTask(newTask);
-            this.Close();
+            Close();
         }
 
         private void btnSuggested_Click(object sender, EventArgs e)
@@ -122,12 +163,16 @@ namespace AnnoyingManager.WindowsTrayAlert
             };
             SetSuggestionAsCurrentFormValues(newTask);
             SetCurrentTask(newTask);
-            this.Close();
+            Close();
         }
 
         private void SetSuggestionAsCurrentFormValues(Task newTask)
         {
-            ddlCategories.Text = newTask.Category;
+            if (!string.IsNullOrEmpty(newTask.Category))
+            {
+                ddlCategories.Text = newTask.Category;
+            }
+            ddlGroups.Text = newTask.Group;
             txtReference.Text = newTask.ReferenceID;
             txtDescription.Text = newTask.Description;
         }
@@ -141,7 +186,9 @@ namespace AnnoyingManager.WindowsTrayAlert
 
         private void btnSuggestedTasks_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented yet.", Constants.APP_LABEL, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            IExternalTaskProvider provider = new FormExternalTaskProvider();
+            var task = provider.GetExternalTask();
+            SetSuggestionAsCurrentFormValues(task);
         }
 
         private void txt_Enter(object sender, EventArgs e)
@@ -165,6 +212,26 @@ namespace AnnoyingManager.WindowsTrayAlert
             int minutes = value / 60;
             int seconds = value % 60;
             lblDuration.Text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnExited(e);
+        }
+
+        private void configurationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _formConfig.Execute();
+        }
+
+        private void reportsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _formReports.Execute();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _formAbout.ShowDialog();
         }
     }
 }

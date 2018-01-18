@@ -6,9 +6,8 @@ using System.Text;
 
 namespace AnnoyingManager.Core.StateMachine
 {
-    public interface IManagerState
+    public interface IManagerStateFactory
     {
-        StateType StateType { get; }
-        StateContext Handle(StateContext context);
+        IManagerState GetState(StateType stateType);
     }
 }

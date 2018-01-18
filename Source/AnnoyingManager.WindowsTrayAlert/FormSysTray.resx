@@ -117,50 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAICAAAAEACACoCAAAFgAAACgAAAAgAAAAQAAAAAEACAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA
-        AAD///8Ay/7/AJn+/wBl/v8AM/7/AAD9/QD+y/8Ay8v/AJnL/wBly/8AM8z/AADL/QD+mf8Ay5n/AJmZ
-        /wBlmP8AM5j/AACY/QD+Zf8Ay2X/AJhl/wBlZf8AM2X/AABl/QD+M/8AyzP/AJgz/wBlM/8AMzP/AAAy
-        /QD9AP0AywD9AJgA/QBlAP0AMgD9AAAA/QD//8sAy//LAJn/zABl/8sAM//MAAD9ywD/y8sAzMzMAJjL
-        ywBmy8wAMsvLAADLzAD/mcsAy5jLAJiYywBmmMwAMpjLAACZzAD/ZcsAy2bMAJhmzABmZswAMmXLAABl
-        zAD/M8sAyzLLAJgyywBlMssAMjLLAAAyzAD9AMsAywDMAJgAzABlAMwAMgDMAAAAzAD//5kAy/+ZAJn/
-        mQBl/5gAM/+ZAAD9mAD/zJkAy8uYAJjLmABmzJkAMsuYAADMmQD/mZkAy5iYAJmZmQBlmJgAM5iZAACX
-        mAD/ZZgAzGaYAJhlmABlZZgAM2WZAABlmAD/M5gAyzKYAJgzmQBlM5kAMzOZAAAymAD9AJgAzACYAJcA
-        mABlAJgAMgCYAAAAmAD//2UAy/9lAJj/ZQBl/2UAM/9mAAD9ZQD/y2UAzMxmAJjMZgBmzGYAMstlAADM
-        ZgD/mGUAzJlmAJiYZQBlmGUAM5lmAACYZQD/ZWUAzGZmAJhlZQBmZmYAMmVlAABlZgD/M2UAyzJlAJkz
-        ZQBlMmUAMjJlAAAyZgD9AGUAzABlAJgAZQBlAGYAMgBmAAAAZgD//zMAzP8zAJj/MwBm/zMAM/8zAAD9
-        MgD/zDMAy8syAJjLMgBlyzIAMssyAADMMwD/mTMAy5gyAJmZMwBlmTMAM5kzAACYMgD/ZjMAy2UyAJlm
-        MwBlZTIAMmUyAABmMwD/MzMAyzIyAJkzMwBlMjIAMzMzAAAxMgD9ADIAzAAyAJgAMgBmADIAMQAyAAAA
-        MgD9/QAAy/0AAJj9AABl/QAAMv0AAAD9AAD9ywAAzMwAAJnMAABlzAAAM8wAAADMAAD9mAAAzJkAAJiY
-        AABlmAAAMpgAAACYAAD9ZQAAzGYAAJhlAABmZgAAMmYAAABmAAD9MgAAzDMAAJgyAABmMwAAMjIAAAAy
-        AAD9AAAAzAAAAJgAAABmAAAAMgAAAAAA7gAAANwAAAC6AAAAqgAAAIgAAAB2AAAAVAAAAEQAAAAiAAAA
-        EAAA7gAAANwAAAC6AAAAqgAAAIgAAAB2AAAAVAAAAEQAAAAiAAAAEAAA7gAAANwAAAC6AAAAqgAAAIgA
-        AAB2AAAAVAAAAEQAAAAiAAAAEAAAAO7u7gDd3d0Au7u7AKqqqgCIiIgAd3d3AFVVVQBEREQAIiIiABER
-        EQAAAAAA////////////////////////////////////////////1NTT09LS0tLS0tL/0tL/9vYAAAAA
-        /yP/9gD/0tLS////1NPT09LS0tLS/9LS//b2AAAAAP8jIyP/AP/S0tL////U1NPT0tLS0v/S0v/29gAA
-        AAAA/yMjI/8A/9LS///////U1NPT0tL/0tL/////////////IyP/9gD/0v/////////U1NPT/9L//zMz
-        MzMICAgICAj////2AP/////////////U09P//zMzMwgICAgICAgICAgICP8A///////////////U/zMz
-        MwgICAgICAgICAgICAgICP////////////////8zMzMICAgICAgICAgI//8ICAgI////////////////
-        MzMzCAgICAgICAgICAgI//8ICAj///////////////8zMwgICAgICAgICAgICAgICAgICP//////////
-        //////8zCAgICAgICAgICAj///8ICAgI/////////////////zMICAgICAgICAgICAgICP8ICAj/////
-        ////////////MwgICAgICAgICAgICAgICP8ICP///////////////zP//wgICAgICAgICAgICAgI/wj/
-        //////////////8z/zMICAgICAgICAgICAgICAj/CP///////////////zP/MwgICAgICAgICAgICAgI
-        CP8I////////////////M/8zCAgICAgICP///wgICAj/CAj/////////////////MzP//wgICAj/9gAA
-        /wgI////CP///////////////////////wgICP/2/wD/CP/2AAD/////////////////////////CAgI
-        //YAAP8I//b/AP////////////////////////8ICAgI////CAj/9gAA////////////////////////
-        /wj/CAgICAgICAj///////////////////////////8ICAj///8ICP8ICAj////////////////////9
-        ////////CAgICAgICP//////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////
-        ///////////9//3//////////////////////////////////////////////////////f///f//////
-        ///////////////////////////////////////////////////////////////////////////9////
-        /////////////wAAAAAAAAAAgAAAAIAAAAHAAAAD4AAAB/AAAA/4AAAf+AAAH/gAAB/4AAAf/AAAH/wA
-        AB/8AAAf+AAAP/AAAD/wAAA/8AAAP/gAAD/4AAB/+AAAf/gAAH/4AAD/+AAB//gAAf/8cAP//H8D//x/
-        h//8f4f//v+H////z////8//
-</value>
-  </data>
+  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>130, 17</value>
+  </metadata>
 </root>

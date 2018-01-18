@@ -10,6 +10,7 @@ namespace AnnoyingManager.Core.DTO
     public class TaskForReport
     {
         public string Category { get; set; }
+        public string Group { get; set; }
         public string ReferenceID { get; set; }
         public string Description { get; set; }
         public DateTime TaskDate { get; set; }
@@ -24,6 +25,7 @@ namespace AnnoyingManager.Core.DTO
             return tasks.Select(t => new TaskForReport()
             {
                 Category = t.Category,
+                Group = t.Group,
                 ReferenceID = t.ReferenceID,
                 Description = t.Description,
                 TaskDate = t.StartDate.Date,

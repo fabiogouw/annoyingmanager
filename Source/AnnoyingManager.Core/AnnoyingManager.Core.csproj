@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net40\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,13 +50,22 @@
   <ItemGroup>
     <Compile Include="Common\AlertType.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\ListStringExtension.cs" />
+    <Compile Include="Common\StateType.cs" />
+    <Compile Include="Contracts\IExternalTaskProvider.cs" />
     <Compile Include="Contracts\IReadOnlyConfigRepository.cs" />
     <Compile Include="Contracts\ITaskSupplier.cs" />
     <Compile Include="DTO\TaskForReport.cs" />
     <Compile Include="Entities\Alert.cs" />
     <Compile Include="Entities\DiaryTasksList.cs" />
+    <Compile Include="Entities\IDiaryTasksList.cs" />
     <Compile Include="Entities\Suggestion.cs" />
     <Compile Include="Entities\Task.cs" />
+    <Compile Include="Repository\TxtToXmlRepositoryUpgrader.cs" />
+    <Compile Include="Repository\XmlRepository.cs" />
+    <Compile Include="StateMachine\IManagerStateFactory.cs" />
+    <Compile Include="StateMachine\ManagerStateFactory.cs" />
+    <Compile Include="StateMachine\ManagerStateSiesta.cs" />
     <Compile Include="TheManager.cs" />
     <Compile Include="Repository\IConfigRepository.cs" />
     <Compile Include="Repository\Config.cs" />
@@ -69,6 +82,7 @@
     <Compile Include="StateMachine\StateContext.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\AnnoyingManager.Core.DTO.TaskForReport.datasource" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

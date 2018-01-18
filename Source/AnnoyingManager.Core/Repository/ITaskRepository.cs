@@ -9,7 +9,7 @@ namespace AnnoyingManager.Core.Repository
     public interface ITaskRepository
     {
         List<Task> GetCurrentTasks(DateTime currentDate);
-        void AddTask(Task task);
         List<Task> SearchTasks(DateTime start, DateTime finish);
+        void SaveTasks(IEnumerable<Task> taskToBeSaved);
     }
 }

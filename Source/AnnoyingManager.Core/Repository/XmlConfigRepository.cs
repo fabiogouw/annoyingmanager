@@ -6,21 +6,13 @@ using System.Xml.Linq;
 using System.IO;
 using Microsoft.Win32;
 using System.Reflection;
+using System.Xml.Serialization;
 
 namespace AnnoyingManager.Core.Repository
 {
     public class XmlConfigRepository : IConfigRepository 
     {
-        private static readonly string DEFAUL_XML_CONFIG = @"<xml>
-                                                                <config>
-                                                                    <startupTime>08:00:00</startupTime>
-                                                                    <endTime>18:00:00</endTime>
-                                                                    <maxLenghtOfTaksInSeconds>1800</maxLenghtOfTaksInSeconds>
-                                                                    <startsAtLogon>false</startsAtLogon>
-                                                                    <showTaskForm>false</showTaskForm>
-                                                                </config>
-                                                            </xml>";
-        
+        private XmlSerializer _serializer = new XmlSerializer(typeof(Config));       
         private string _path = string.Empty;
         private static object _lock = new object();
         private static XDocument _xml = null;
@@ -35,23 +27,30 @@ namespace AnnoyingManager.Core.Repository
 
         public Config GetConfig()
         {
+            var config = new Config();
             lock (_lock)
             {
                 if (_xml == null)
                 {
                     if (File.Exists(_path))
-                        _xml = XDocument.Load(_path);   // load the xml config file
+                    {
+                        using (var fileStream = new FileStream(_path, FileMode.Open))
+                        {
+                            config = (Config)_serializer.Deserialize(fileStream);
+                        }
+                    }
                     else
-                        _xml = XDocument.Parse(DEFAUL_XML_CONFIG);  // or create new from template
+                    {
+                        // defaults
+                        config.StartupTime = new TimeSpan(8, 0, 0);
+                        config.EndTime = new TimeSpan(18, 0, 0);
+                        config.MaxLengthOfTaskInSeconds = 1800;
+                        config.SiestaLengthInSeconds = 0;
+                        config.StartsAtLogon = false;
+                        config.ShowTaskForm = false;
+                    }
                 }
-                var config = new Config()
-                {
-                    StartupTime = TimeSpan.Parse(_xml.Root.Descendants("config").Elements("startupTime").Single().Value),
-                    EndTime = TimeSpan.Parse(_xml.Root.Descendants("config").Elements("endTime").Single().Value),
-                    MaxLenghtOfTaskInSeconds = int.Parse(_xml.Root.Descendants("config").Elements("maxLenghtOfTaksInSeconds").Single().Value),
-                    StartsAtLogon = bool.Parse((_xml.Root.Descendants("config").Elements("startsAtLogon").SingleOrDefault() ?? new XElement("startsAtLogon", "false")).Value),
-                    ShowTaskForm = bool.Parse((_xml.Root.Descendants("config").Elements("showTaskForm").SingleOrDefault() ?? new XElement("showTaskForm", "false")).Value)
-                };
+                config.SiestaLengthInSeconds = 0;   // TODO: verify this later
                 return config;
             }
         }
@@ -60,25 +59,13 @@ namespace AnnoyingManager.Core.Repository
         {
             lock (_lock)
             {
+                using (var sw = new StreamWriter(_path, false))
+                {
+                    _serializer.Serialize(sw, config);
+                    sw.Close();
+                }
                 ConfigureToStartAtLogon(config.StartsAtLogon);
-                SetConfigValue("startupTime", config.StartupTime.ToString());
-                SetConfigValue("endTime", config.EndTime.ToString());
-                SetConfigValue("maxLenghtOfTaksInSeconds", config.MaxLenghtOfTaskInSeconds.ToString());
-                SetConfigValue("startsAtLogon", config.StartsAtLogon.ToString());
-                SetConfigValue("showTaskForm", config.ShowTaskForm.ToString());
-                _xml.Save(_path);
             }
-        }
-
-        private void SetConfigValue(string configName, string value)
-        {
-            var node = _xml.Root.Descendants("config").Elements(configName).SingleOrDefault();
-            if (node == null)
-            {
-                node = new XElement(configName);
-                _xml.Root.Element("config").Add(node);
-            }
-            node.Value = value;
         }
 
         public DateTime GetCurrentDateTime()
